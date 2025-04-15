@@ -1,4 +1,4 @@
-package com.capo.asignacion_redis.adapter.out.persistence;
+package com.capo.asignacion_redis.adapter.out.persistence.redisPetition;
 import org.redisson.api.RJsonBucketReactive;
 import org.redisson.api.RMapCacheReactive;
 import org.redisson.api.RMapReactive;

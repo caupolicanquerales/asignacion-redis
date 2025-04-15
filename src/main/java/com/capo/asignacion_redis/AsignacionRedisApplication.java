@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AsignacionRedisApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AsignacionRedisApplication.class, args);
+		String[] customArgs = new String[] {"points","destinations"};
+		SpringApplication.run(AsignacionRedisApplication.class, customArgs);
 	}
 
 }

@@ -5,7 +5,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
+import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 import com.capo.asignacion_redis.adapter.in.model.DestinationsModel;
+import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
+import com.capo.asignacion_redis.adapter.out.persistence.startingApp.OperationsInRedisStarting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import reactor.core.publisher.Flux;
@@ -17,9 +20,8 @@ public class PreloadDestinationAndCost implements CommandLineRunner{
 	@Autowired
 	DestinationPointOfSalesMongoRepository destinationPointOfSales;*/
 	
-	/*
 	@Autowired
-	CostAndRouteRedis costAndRouteRedis;*/
+	OperationsInRedisStarting operationsInCost;
 	
 	@Autowired
 	RecoverFileFromResource recoverFile;
@@ -34,6 +36,11 @@ public class PreloadDestinationAndCost implements CommandLineRunner{
 			if(arg.equals(DESTINATIONS)) {
 				System.out.println("Ejecute el command line in DESTINATIONS");
 				DestinationsModel destinations= getFileFromResourceCostAndDestination(FILE_COSTS);
+				Flux.fromIterable(destinations.getCostAndDestination())
+						//.map(this::getDestinationPointOfSalesMongo)
+						//.flatMap(destination->destinationPointOfSales.save(destination))
+						.map(this::savingDestinationInRedis).subscribe();
+				
 				/*
 				destinationPointOfSales.findAll().hasElements().map(elements->{
 					if(elements) {
@@ -57,20 +64,29 @@ public class PreloadDestinationAndCost implements CommandLineRunner{
 		DestinationsModel destinations= mapper.readValue(json, DestinationsModel.class);
 		return destinations;
 	}
+	
 	/*
-	private DestinationPointOfSalesMongo getDestinationPointOfSalesMongo(DestinationModel destination) {
+	private DestinationPointOfSalesMongo getDestinationPointOfSalesMongo(Destination destination) {
 		DestinationPointOfSalesMongo destinationMongo = new DestinationPointOfSalesMongo();
 		destinationMongo.setDestination(destination);
 		return destinationMongo;
-	}*/
+	}
 	
-	/*
 	private Mono<String> savingDestinationInRedis(DestinationPointOfSalesMongo response) {
-		PointsAndCostModel vertexRedis= new PointsAndCostModel();
+		VertexRedisRequest vertexRedis= new VertexRedisRequest();
 		vertexRedis.setStartVertex(response.getDestination().getStartVertex());
 		vertexRedis.setEndVertex(response.getDestination().getEndVertex());
 		vertexRedis.setCost(response.getDestination().getCost());
 		costAndRouteRedis.saveAndUpdateCostAndDestinationStartingApp(vertexRedis);
 		return Mono.just("OK");
 	}*/
+	
+	private Mono<String> savingDestinationInRedis(DestinationModel response) {
+		VertexRedisModel vertexRedis= new VertexRedisModel();
+		vertexRedis.setStartVertex(response.getStartVertex());
+		vertexRedis.setEndVertex(response.getEndVertex());
+		vertexRedis.setCost(response.getCost());
+		operationsInCost.saveAndUpdateCostAndDestinationStartingApp(vertexRedis);
+		return Mono.just("OK");
+	}
 }
