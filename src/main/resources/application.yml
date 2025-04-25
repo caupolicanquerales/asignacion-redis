@@ -1,0 +1,40 @@
+server:
+  port: 8081
+token:
+  secret: 'kajEgkbpCZKICOkuraCEB855q2WUc9AVqIkemL3V0Dm9Ezj4UajzJ3g18Hg7mCvY'
+spring:
+  application:
+    name: asignacion-redis
+  redis:
+    host: localhost
+	
+    #host: redis
+    port: 6379
+  cloud:
+    function:
+      definition: processorResultDestination;processorResultPointOfSale
+    stream:
+      default:
+        producer:
+          useNativeEncoding: true
+      bindings:
+        processorResultDestination-in-0:
+          destination: mongo-result-events
+          group: mongo-group
+        processorResultPointOfSale-in-0:
+          destination: mongo-result-events
+          group: mongo-group
+        processorResultDestination-out-0:
+          destination: redis-destination-events
+        processorResultPointOfSale-out-0:
+          destination: redis-point-events
+      kafka:
+        binder:
+          consumer-properties:
+            "value.deserializer": org.springframework.kafka.support.serializer.JsonDeserializer
+            "key.deserializer": org.apache.kafka.common.serialization.StringDeserializer
+            "auto.offset.reset": "earliest"
+            "spring.json.trusted.packages": "com.capo.asignacion_redis.adapter.in.events.*"
+          producer-properties:
+            "value.serializer": org.springframework.kafka.support.serializer.JsonSerializer
+            "key.serializer": org.apache.kafka.common.serialization.StringSerializer

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
-import com.capo.asignacion_redis.adapter.out.model.PointsRedisModel;
+import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
 import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.InputPetitionToRedis;
 
@@ -25,7 +25,7 @@ public class OperationsInRedisStartingApp implements OperationsInRedisStarting {
 	}
 	
 	@Override
-	public String savePointsOfSaleStartingApp(PointsRedisModel request) {
+	public String savePointsOfSaleStartingApp(PointRedisModel request) {
 		RMapReactive<String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value);
 		map.put(request.getLocation(),request.getId()).then().subscribe();
 		return "OK";

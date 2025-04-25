@@ -1,6 +1,6 @@
 package com.capo.asignacion_redis.adapter.out.model;
 
-public class PointsRedisModel {
+public class PointRedisModel {
 	private String id;
 	private String location;
 	
