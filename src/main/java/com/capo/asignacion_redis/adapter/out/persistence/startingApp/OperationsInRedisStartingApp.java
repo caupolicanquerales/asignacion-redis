@@ -17,17 +17,17 @@ public class OperationsInRedisStartingApp implements OperationsInRedisStarting {
 	InputPetitionToRedis petitionRedis;
 	
 	@Override
-	public String saveAndUpdateCostAndDestinationStartingApp(VertexRedisModel request) {
-		String key= request.getStartVertex()+","+request.getEndVertex();
+	public String saveAndUpdateCostAndDestinationStartingApp(VertexRedisModel vertexRedisModel) {
+		String key= vertexRedisModel.getStartVertex()+","+vertexRedisModel.getEndVertex();
 		RMapReactive<String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_COST.value);
-		map.put(key, request.getCost()).then().subscribe();
+		map.put(key, vertexRedisModel.getCost()).then().subscribe();
 		return "OK";
 	}
 	
 	@Override
-	public String savePointsOfSaleStartingApp(PointRedisModel request) {
+	public PointRedisModel savePointsOfSaleStartingApp(PointRedisModel pointRedisModel) {
 		RMapReactive<String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value);
-		map.put(request.getLocation(),request.getId()).then().subscribe();
-		return "OK";
+		map.put(pointRedisModel.getLocation(),pointRedisModel.getId()).then().subscribe();
+		return pointRedisModel;
 	}
 }

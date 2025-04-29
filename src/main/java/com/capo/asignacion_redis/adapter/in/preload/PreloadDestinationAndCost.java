@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-public class PreloadDestinationAndCost implements CommandLineRunner{
+public class PreloadDestinationAndCost /*implements CommandLineRunner*/{
 	/*
 	@Autowired
 	DestinationPointOfSalesMongoRepository destinationPointOfSales;*/
@@ -30,7 +30,7 @@ public class PreloadDestinationAndCost implements CommandLineRunner{
 	private static final String FILE_COSTS="/information/cost_and_destination_point_of_sales.json";
 
 	
-	@Override
+	//s@Override
 	public void run(String... args) throws Exception {
 		for(String arg: args) {
 			if(arg.equals(DESTINATIONS)) {

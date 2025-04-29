@@ -5,21 +5,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
+import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.out.emitEvents.EventInUse;
+import com.capo.asignacion_redis.adapter.out.events.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.PointsOfSaleModel;
 import com.capo.asignacion_redis.adapter.out.persistence.startingApp.OperationsInRedisStarting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Component
 public class PreloadPointsOfSale implements CommandLineRunner {
 	
-	/*
 	@Autowired
-	PointOfSaleMongoRepository pointOfSaleMongo;*/
-	
+	EventInUse<RedisPointOfSaleEvent> emitEvent;
+
 	@Autowired
 	OperationsInRedisStarting operationsInCost;
 	
@@ -35,9 +36,10 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 			if(arg.equals(POINTS)) {
 				PointsOfSaleModel pointsOfSale= getFileFromResourcePointsOfSale(FILE_POINTS);
 				Flux.fromIterable(pointsOfSale.getPointOfSales())
-				//.map(this::getPointOfSalesInMongo)
-				//.flatMap(destination->pointOfSaleMongo.save(destination))
-				.map(this::savingPointOfSalesInRedis).subscribe();
+				.map(this::savingPointOfSalesInRedis)
+				.map(model-> MapperRedisEvent.mapperPointOfSaleEvent(model))
+				.doOnNext(event->emitEvent.publishing(event))
+				.subscribe();
 				
 				
 				/*
@@ -63,6 +65,11 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 		return points;
 	}
 	
+	private PointRedisModel savingPointOfSalesInRedis(PointRedisModel response) {
+		PointRedisModel result= operationsInCost.savePointsOfSaleStartingApp(response);
+		return result;
+	}
+	
 	/*
 	private PointOfSalesInMongo getPointOfSalesInMongo(Point point) {
 		PointOfSalesInMongo pointsInMongo= new PointOfSalesInMongo();
@@ -76,9 +83,4 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 		pointsOfSaleRedis.savePointsOfSaleStartingApp(pointsRedis);
 		return Mono.just("OK");
 	}*/
-	
-	private Mono<String> savingPointOfSalesInRedis(PointRedisModel response) {
-		operationsInCost.savePointsOfSaleStartingApp(response);
-		return Mono.just("OK");
-	}
 }

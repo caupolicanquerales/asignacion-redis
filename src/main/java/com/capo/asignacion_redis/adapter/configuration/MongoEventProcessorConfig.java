@@ -36,6 +36,7 @@ public class MongoEventProcessorConfig {
                            .map(this::toMessageDestination);
     }
 	
+	
 	@Bean
     public Function<Flux<Message<FromMongoResultEvent>>, Flux<Message<RedisPointOfSaleEvent>>> processorResultPointOfSale() {
         return flux -> flux.map(MessageConverter::toRecord)
@@ -47,7 +48,6 @@ public class MongoEventProcessorConfig {
                            .map(r-> mapPoints(r.message()))
                            .map(this::toMessagePoint);
     }
-	
 	
 	private RedisDestinationEvent mapDestination(FromMongoResultEvent redisDestination) {
 		RedisDestinationEvent redisDestinationEvent= new RedisDestinationEvent();

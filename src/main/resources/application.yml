@@ -7,13 +7,13 @@ spring:
     name: asignacion-redis
   redis:
     host: localhost
-	
     #host: redis
     port: 6379
   cloud:
     function:
-      definition: processorResultDestination;processorResultPointOfSale
+      definition: processorResultDestination;processorResultPointOfSale;publishingPointOfSaleEvent
     stream:
+      default-binder: kafka
       default:
         producer:
           useNativeEncoding: true
@@ -28,6 +28,8 @@ spring:
           destination: redis-destination-events
         processorResultPointOfSale-out-0:
           destination: redis-point-events
+        publishingPointOfSaleEvent-out-0:
+          destination: redis-point-events
       kafka:
         binder:
           consumer-properties:
@@ -38,3 +40,4 @@ spring:
           producer-properties:
             "value.serializer": org.springframework.kafka.support.serializer.JsonSerializer
             "key.serializer": org.apache.kafka.common.serialization.StringSerializer
+          brokers: localhost:9092

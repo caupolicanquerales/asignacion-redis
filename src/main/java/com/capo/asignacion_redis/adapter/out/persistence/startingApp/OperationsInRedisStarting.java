@@ -5,5 +5,5 @@ import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
 
 public interface OperationsInRedisStarting {
 	String saveAndUpdateCostAndDestinationStartingApp(VertexRedisModel request);
-	String savePointsOfSaleStartingApp(PointRedisModel request);
+	PointRedisModel savePointsOfSaleStartingApp(PointRedisModel request);
 }
