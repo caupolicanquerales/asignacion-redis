@@ -1,26 +1,32 @@
 package com.capo.asignacion_redis.adapter.out.emitEvents;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import com.capo.asignacion_redis.adapter.out.events.RedisPointOfSaleEvent;
+import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
-@Service
-public class EmitPointOfSaleEvent implements EventInUse<RedisPointOfSaleEvent>{
-	
-	private final Sinks.Many<RedisPointOfSaleEvent> sink;
-	private final EmitEvent emitEvent;
+public class EmitPointOfSaleEvent implements EmitingEvent<RedisPointOfSaleEvent>,EventInUse<RedisPointOfSaleEvent>{
 	
 	@Autowired
-	public EmitPointOfSaleEvent(Sinks.Many<RedisPointOfSaleEvent> sink,EmitEvent emitEvent) {
+	private EmitEvent emitEvent;
+	
+	private final Sinks.Many<RedisPointOfSaleEvent> sink;
+	private final Flux<RedisPointOfSaleEvent> flux;
+	
+	public EmitPointOfSaleEvent(Sinks.Many<RedisPointOfSaleEvent> sink,Flux<RedisPointOfSaleEvent> flux) {
 		this.sink=sink;
-		this.emitEvent=emitEvent;
+		this.flux=flux;
 	}
-
+	
 	@Override
-	public void publishing(RedisPointOfSaleEvent event) {
+    public Flux<RedisPointOfSaleEvent> publish() {
+        return this.flux;
+    }
+	
+	@Override
+	public void emit(RedisPointOfSaleEvent event) {
 		emitEvent.emitEvent(sink, event);
 	}
 }

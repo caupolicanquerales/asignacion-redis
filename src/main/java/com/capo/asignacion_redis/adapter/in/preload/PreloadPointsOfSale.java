@@ -4,23 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
 import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EventInUse;
-import com.capo.asignacion_redis.adapter.out.events.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.PointsOfSaleModel;
 import com.capo.asignacion_redis.adapter.out.persistence.startingApp.OperationsInRedisStarting;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import reactor.core.publisher.Flux;
 
 @Component
 public class PreloadPointsOfSale implements CommandLineRunner {
+	/*
+	@Autowired
+	EmitingEvent<String> emitEvent;*/
 	
 	@Autowired
-	EventInUse<RedisPointOfSaleEvent> emitEvent;
-
+	EmitingEvent<RedisPointOfSaleEvent> emitEvent;
+	
 	@Autowired
 	OperationsInRedisStarting operationsInCost;
 	
@@ -30,6 +35,8 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 	private static final String POINTS="points";
 	private static final String FILE_POINTS="/information/point_of_sales.json";
 	
+	private ObjectMapper mapper = new ObjectMapper();
+	
 	@Override
 	public void run(String... args) throws Exception {
 		for(String arg: args) {
@@ -38,7 +45,8 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 				Flux.fromIterable(pointsOfSale.getPointOfSales())
 				.map(this::savingPointOfSalesInRedis)
 				.map(model-> MapperRedisEvent.mapperPointOfSaleEvent(model))
-				.doOnNext(event->emitEvent.publishing(event))
+				//.map(event-> convertEventToJson(event))
+				.doOnNext(event->emitEvent.emit(event))
 				.subscribe();
 				
 				
@@ -68,6 +76,14 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 	private PointRedisModel savingPointOfSalesInRedis(PointRedisModel response) {
 		PointRedisModel result= operationsInCost.savePointsOfSaleStartingApp(response);
 		return result;
+	}
+	
+	private String convertEventToJson(RedisPointOfSaleEvent event){
+		try {
+			return mapper.writeValueAsString(event);
+		} catch (JsonProcessingException e) {
+			return "Error";
+		}
 	}
 	
 	/*

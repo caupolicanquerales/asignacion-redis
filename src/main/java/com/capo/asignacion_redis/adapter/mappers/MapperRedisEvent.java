@@ -1,6 +1,6 @@
 package com.capo.asignacion_redis.adapter.mappers;
 
-import com.capo.asignacion_redis.adapter.out.events.RedisPointOfSaleEvent;
+import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 
 public class MapperRedisEvent {

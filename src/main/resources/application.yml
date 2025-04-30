@@ -18,25 +18,24 @@ spring:
         producer:
           useNativeEncoding: true
       bindings:
+        event-channel:
+          destination: redis-point-events
         processorResultDestination-in-0:
-          destination: mongo-result-events
-          group: mongo-group
+          destination: mongo-result-destination-events
+          group: mongo-destination-group
         processorResultPointOfSale-in-0:
-          destination: mongo-result-events
-          group: mongo-group
+          destination: mongo-result-point-events
+          group: mongo-point-group
         processorResultDestination-out-0:
           destination: redis-destination-events
-        processorResultPointOfSale-out-0:
-          destination: redis-point-events
-        publishingPointOfSaleEvent-out-0:
-          destination: redis-point-events
       kafka:
         binder:
           consumer-properties:
             "value.deserializer": org.springframework.kafka.support.serializer.JsonDeserializer
             "key.deserializer": org.apache.kafka.common.serialization.StringDeserializer
             "auto.offset.reset": "earliest"
-            "spring.json.trusted.packages": "com.capo.asignacion_redis.adapter.in.events.*"
+            "enable.auto.commit": false
+            "spring.json.trusted.packages": "*"
           producer-properties:
             "value.serializer": org.springframework.kafka.support.serializer.JsonSerializer
             "key.serializer": org.apache.kafka.common.serialization.StringSerializer
