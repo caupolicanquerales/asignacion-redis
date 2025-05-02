@@ -11,23 +11,23 @@ spring:
     port: 6379
   cloud:
     function:
-      definition: processorResultDestination;processorResultPointOfSale;publishingPointOfSaleEvent
+      definition: publishingDestinationEvent;processorResultPointOfSale;publishingPointOfSaleEvent
     stream:
       default-binder: kafka
       default:
         producer:
           useNativeEncoding: true
       bindings:
-        event-channel:
+        event-point:
           destination: redis-point-events
+        event-destination:
+          destination: redis-destination-events
         processorResultDestination-in-0:
           destination: mongo-result-destination-events
           group: mongo-destination-group
         processorResultPointOfSale-in-0:
           destination: mongo-result-point-events
           group: mongo-point-group
-        processorResultDestination-out-0:
-          destination: redis-destination-events
       kafka:
         binder:
           consumer-properties:

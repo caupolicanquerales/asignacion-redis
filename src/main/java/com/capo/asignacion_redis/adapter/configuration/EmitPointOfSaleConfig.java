@@ -13,7 +13,7 @@ import reactor.core.publisher.Sinks;
 public class EmitPointOfSaleConfig {
 	
 	@Bean
-    public EmitPointOfSaleEvent orderEventListener(){
+    public EmitPointOfSaleEvent emitPointEventListener(){
         var sink = Sinks.many().unicast().<RedisPointOfSaleEvent>onBackpressureBuffer();
         var flux = sink.asFlux();
         return new EmitPointOfSaleEvent(sink, flux);

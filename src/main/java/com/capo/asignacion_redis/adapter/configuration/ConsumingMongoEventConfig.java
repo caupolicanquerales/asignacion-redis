@@ -23,7 +23,8 @@ public class ConsumingMongoEventConfig {
 	@Bean
     public Consumer<Flux<Message<MongoResultEvent>>> processorResultDestination() {
         return flux -> flux.map(MessageConverter::toRecord)
-                           .doOnNext(r -> log.info("get event from Mongo Destination {}", r.message()));
+                           .doOnNext(r -> log.info("get event from Mongo Destination {}", r.message()))
+                           .subscribe();
                            //.concatMap(r -> this.eventProcessor.process(r.message())
                           //                                    .doOnSuccess(e -> r.acknowledgement().acknowledge())
                           // )

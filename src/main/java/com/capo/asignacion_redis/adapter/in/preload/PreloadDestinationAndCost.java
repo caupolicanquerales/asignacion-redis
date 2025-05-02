@@ -4,21 +4,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.capo.adapter.kafkaEvents.RedisDestinationEvent;
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 import com.capo.asignacion_redis.adapter.in.model.DestinationsModel;
+import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
 import com.capo.asignacion_redis.adapter.out.persistence.startingApp.OperationsInRedisStarting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Component
-public class PreloadDestinationAndCost /*implements CommandLineRunner*/{
-	/*
+public class PreloadDestinationAndCost implements CommandLineRunner{
+	
 	@Autowired
-	DestinationPointOfSalesMongoRepository destinationPointOfSales;*/
+	EmitingEvent<RedisDestinationEvent> emitEvent;
 	
 	@Autowired
 	OperationsInRedisStarting operationsInCost;
@@ -30,16 +32,26 @@ public class PreloadDestinationAndCost /*implements CommandLineRunner*/{
 	private static final String FILE_COSTS="/information/cost_and_destination_point_of_sales.json";
 
 	
-	//s@Override
+	@Override
 	public void run(String... args) throws Exception {
 		for(String arg: args) {
 			if(arg.equals(DESTINATIONS)) {
-				System.out.println("Ejecute el command line in DESTINATIONS");
 				DestinationsModel destinations= getFileFromResourceCostAndDestination(FILE_COSTS);
 				Flux.fromIterable(destinations.getCostAndDestination())
-						//.map(this::getDestinationPointOfSalesMongo)
-						//.flatMap(destination->destinationPointOfSales.save(destination))
-						.map(this::savingDestinationInRedis).subscribe();
+				.map(this::savingDestinationInRedis)
+				.map(model-> MapperRedisEvent.mapperDestinationEvent(model))
+				.doOnNext(event->emitEvent.emit(event))
+				.subscribe();
+				
+				/*
+				PointsOfSaleModel pointsOfSale= getFileFromResourcePointsOfSale(FILE_POINTS);
+				Flux.fromIterable(pointsOfSale.getPointOfSales())
+				.map(this::savingPointOfSalesInRedis)
+				.map(model-> MapperRedisEvent.mapperPointOfSaleEvent(model))
+				//.map(event-> convertEventToJson(event))
+				.doOnNext(event->emitEvent.emit(event))
+				.subscribe();
+				*/
 				
 				/*
 				destinationPointOfSales.findAll().hasElements().map(elements->{
@@ -81,12 +93,12 @@ public class PreloadDestinationAndCost /*implements CommandLineRunner*/{
 		return Mono.just("OK");
 	}*/
 	
-	private Mono<String> savingDestinationInRedis(DestinationModel response) {
+	private VertexRedisModel savingDestinationInRedis(DestinationModel response) {
 		VertexRedisModel vertexRedis= new VertexRedisModel();
 		vertexRedis.setStartVertex(response.getStartVertex());
 		vertexRedis.setEndVertex(response.getEndVertex());
 		vertexRedis.setCost(response.getCost());
 		operationsInCost.saveAndUpdateCostAndDestinationStartingApp(vertexRedis);
-		return Mono.just("OK");
+		return vertexRedis;
 	}
 }
