@@ -1,6 +1,8 @@
-package com.capo.asignacion_redis.adapter.in.model;
+package com.capo.asignacion_redis.adapter.out.model;
 
 import java.util.List;
+
+import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 
 public class DestinationsModel {
 	
