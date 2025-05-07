@@ -5,13 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import com.capo.asignacion_redis.application.domain.model.GraphModel;
 import com.capo.asignacion_redis.application.domain.model.Node;
 
 
-public class DijkstraAlgorithmRedisImpl implements DijkstraAlgorithmRedis {
+public class DijkstraAlgorithmImpl implements DijkstraAlgorithm {
 	
 	@Override
-	public Map<String,Map<Integer,String>> dijkstra(Map<String,List<Node>> adj, int source) {
+	public Map<String,Map<Integer,String>> dijkstra(GraphModel graphModel, int source) {
+		Map<String,List<Node>> adj= graphModel.getGraphObject();
 		int[] distance = distanceArray(adj,source);
 		String[] routes = routeArray(adj,source);
 		PriorityQueue<Node> pq = new PriorityQueue<>(

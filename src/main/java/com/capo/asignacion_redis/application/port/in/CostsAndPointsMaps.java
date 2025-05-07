@@ -1,4 +1,4 @@
-package com.capo.asignacion_redis.application.port.out;
+package com.capo.asignacion_redis.application.port.in;
 
 import java.util.Map;
 

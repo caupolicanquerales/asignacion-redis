@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
+import com.capo.asignacion_redis.adapter.out.buildingGraph.BuildingGraphDestination;
+import com.capo.asignacion_redis.adapter.out.dijkstra.Dijkstra;
 import com.capo.asignacion_redis.adapter.out.model.DestinationsModel;
 import com.capo.asignacion_redis.adapter.out.model.ResponseGraphRedisModel;
 import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationDestination;
@@ -22,6 +24,12 @@ public class CostPointsOfSaleRedisController {
 	
 	@Autowired
 	OperationDestination costAndRoute;
+	
+	@Autowired
+	BuildingGraphDestination buildingGraph;
+	
+	@Autowired
+	Dijkstra dijkstra;
 	
 	@PostMapping("/update-cost")
 	public Mono<ResponseEntity<String>> updateCostAndDestination(@RequestBody DestinationModel request){
@@ -43,21 +51,16 @@ public class CostPointsOfSaleRedisController {
 	
 	@GetMapping("/prices")
 	public Mono<ResponseEntity<ResponseGraphRedisModel>> getPricesFromVertex(@RequestBody DestinationModel request){
-		/*
-		return costAndRoute.estimationOfCosts(request.getStartVertex())
+		return dijkstra.estimationOfCosts(request)
 				.map(ResponseEntity.ok()::body)
-				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));*/
-		return null;
+				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 	
 	@GetMapping("/build")
 	public Mono<ResponseEntity<String>> buildingGraph(@RequestBody DestinationModel request){
-		/*
-		return costAndRoute.buildingGraph()
+		return buildingGraph.buildingGraph()
 				.map(ResponseEntity.ok()::body)
-				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));*/
-		
-		return null;
+				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 	
 	@GetMapping("/destinations")

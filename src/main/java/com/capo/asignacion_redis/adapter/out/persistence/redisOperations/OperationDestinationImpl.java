@@ -2,6 +2,7 @@ package com.capo.asignacion_redis.adapter.out.persistence.redisOperations;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.redisson.api.RMapReactive;
@@ -11,15 +12,16 @@ import org.springframework.stereotype.Service;
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 import com.capo.asignacion_redis.adapter.out.model.DestinationsModel;
-import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.InputPetitionToRedis;
+import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.BasicPetitionToRedis;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 public class OperationDestinationImpl implements OperationDestination{
 	
 	@Autowired
-	InputPetitionToRedis petitionRedis;
+	BasicPetitionToRedis petitionRedis;
 	
 	@Override
 	public Mono<DestinationsModel> getAllCostsAndDestinations() {
@@ -27,6 +29,12 @@ public class OperationDestinationImpl implements OperationDestination{
 		return map.entryIterator().map(this::getCostAndDestination)
 			.collect(Collectors.toList())
 			.map(this::getResponseCostDestinations);
+	}
+	
+	@Override
+	public Flux<Entry<String, String>> getMapCost() {
+		return this.petitionRedis.getReactiveMap(RedisEnum.MAP_COST.value)
+		.entryIterator();
 	}
 	
 	private DestinationModel getCostAndDestination(Map.Entry<String, String> entry) {

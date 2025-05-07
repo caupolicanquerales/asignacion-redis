@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
 import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
-import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.InputPetitionToRedis;
+import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.BasicPetitionToRedis;
 
 
 @Service
 public class OperationsInRedisStartingApp implements OperationsInRedisStarting {
 	
 	@Autowired
-	InputPetitionToRedis petitionRedis;
+	BasicPetitionToRedis petitionRedis;
 	
 	@Override
 	public VertexRedisModel saveAndUpdateCostAndDestinationStartingApp(VertexRedisModel vertexRedisModel) {

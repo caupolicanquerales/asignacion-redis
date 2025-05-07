@@ -6,14 +6,19 @@ import java.util.Map;
 import com.capo.asignacion_redis.application.domain.model.GraphModel;
 import com.capo.asignacion_redis.application.domain.model.Node;
 import com.capo.asignacion_redis.application.domain.model.WeightedGraphModel;
-import com.capo.asignacion_redis.application.port.out.CostsAndPointsMaps;
+import com.capo.asignacion_redis.application.port.in.CostsAndPointsMaps;
+import com.capo.asignacion_redis.application.port.out.BuildingGraph;
 
 import reactor.core.publisher.Mono;
 
 
-public class BuildingGraphRedisImpl implements BuildingGraphRedis {
+public class BuildingGraphImpl implements BuildingGraph {
 	
 	private CostsAndPointsMaps costsAndPointsMaps;
+	
+	public BuildingGraphImpl(CostsAndPointsMaps costsAndPointsMaps) {
+		this.costsAndPointsMaps=costsAndPointsMaps;
+	}
 	
 	@Override
 	public Mono<GraphModel> buildingGraph() {

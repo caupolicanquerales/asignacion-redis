@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.capo.asignacion_redis.adapter.in.model.GraphObjectModel;
+import com.capo.asignacion_redis.application.domain.model.GraphModel;
 
 import reactor.core.publisher.Mono;
 
 @Repository
-public class InputPetitionToRedisImpl implements InputPetitionToRedis{
+public class BasicPetitionToRedisImpl implements BasicPetitionToRedis{
 	
 	@Autowired
 	private RedissonReactiveClient client;
@@ -32,5 +33,12 @@ public class InputPetitionToRedisImpl implements InputPetitionToRedis{
 	@Override
 	public RMapCacheReactive <String,String> getRMapCahe(String mapName){
 		return client.getMapCache(mapName);
+	}
+	
+	@Override
+	public String saveReactiveJsonBucket(String jsonName, GraphModel graph){
+		RJsonBucketReactive<GraphModel> json= client.getJsonBucket(jsonName,new JacksonCodec<>(GraphModel.class));
+		json.set(graph).then().subscribe();
+		return "OK";
 	}
 }

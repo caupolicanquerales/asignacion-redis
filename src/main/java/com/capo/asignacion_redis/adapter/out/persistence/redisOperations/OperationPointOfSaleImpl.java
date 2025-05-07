@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
 import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.PointsOfSaleModel;
-import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.InputPetitionToRedis;
+import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.BasicPetitionToRedis;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 public class OperationPointOfSaleImpl implements OperationPointOfSale{
 	
 	@Autowired
-	InputPetitionToRedis petitionRedis;
+	BasicPetitionToRedis petitionRedis;
 	
 	@Override
 	public Mono<PointsOfSaleModel> getPointsOfSale() {
@@ -27,6 +28,12 @@ public class OperationPointOfSaleImpl implements OperationPointOfSale{
 		return map.entryIterator().map(this::getPointsOfSale)
 			.collect(Collectors.toList())
 			.map(this::getResponsePointsRedis);
+	}
+	
+	@Override
+	public Flux<Map.Entry<String, String>> getMapStores() {
+		return this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value)
+			.entryIterator();
 	}
 	
 	private PointRedisModel getPointsOfSale(Map.Entry<String, String> entry) {
