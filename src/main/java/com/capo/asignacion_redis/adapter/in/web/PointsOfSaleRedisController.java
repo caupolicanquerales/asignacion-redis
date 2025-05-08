@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.capo.asignacion_redis.adapter.in.model.PointsRedisRequestModel;
+import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.PointsOfSaleModel;
+import com.capo.asignacion_redis.adapter.out.operationPointOfSale.SavePointOfSale;
 import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationPointOfSale;
 
 import reactor.core.publisher.Mono;
@@ -18,12 +19,14 @@ import reactor.core.publisher.Mono;
 @RequestMapping("puntos")
 public class PointsOfSaleRedisController {
 	
-	
 	@Autowired
 	OperationPointOfSale operationInRedis;
 	
+	@Autowired
+	SavePointOfSale savePointOfSale;
+	
 	@PostMapping("/save")
-	public Mono<ResponseEntity<String>> saveAndUpdatePointsOfsale(@RequestBody PointsRedisRequestModel request){
+	public Mono<ResponseEntity<String>> saveAndUpdatePointsOfsale(@RequestBody PointRedisModel request){
 		/*
 		return pointsOfSale.updateCostPointsOfSale(request)
 				.map(ResponseEntity.ok()::body)
@@ -32,7 +35,7 @@ public class PointsOfSaleRedisController {
 	}
 	
 	@PostMapping("/remove")
-	public Mono<ResponseEntity<String>> removePointsOfSale(@RequestBody PointsRedisRequestModel request){
+	public Mono<ResponseEntity<String>> removePointsOfSale(@RequestBody PointRedisModel request){
 		/*
 		return pointsOfSale.removePointsOfSale(request)
 				.map(ResponseEntity.ok()::body)
@@ -41,18 +44,16 @@ public class PointsOfSaleRedisController {
 	}
 	
 	@GetMapping("/points")
-	public Mono<ResponseEntity<PointsOfSaleModel>> getPointsOfSale(@RequestBody PointsRedisRequestModel request){
+	public Mono<ResponseEntity<PointsOfSaleModel>> getPointsOfSale(@RequestBody PointRedisModel request){
 		return operationInRedis.getPointsOfSale()
 				.map(ResponseEntity.ok()::body)
 				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 	
 	@PostMapping("/save-point")
-	public Mono<ResponseEntity<String>> savePointsOfsale(@RequestBody PointsRedisRequestModel request){
-		/*
-		return pointsOfSale.savePointsOfSale(request)
+	public Mono<ResponseEntity<String>> savePointsOfsale(@RequestBody PointRedisModel request){
+		return savePointOfSale.savePointOfSale(request)
 				.map(ResponseEntity.ok()::body)
-				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));*/
-		return null;
+				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 }

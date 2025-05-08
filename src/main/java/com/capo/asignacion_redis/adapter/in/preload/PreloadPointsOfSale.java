@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 
 import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
+import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
-import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.PointsOfSaleModel;
 import com.capo.asignacion_redis.adapter.out.persistence.startingApp.OperationsInRedisStarting;
 import com.fasterxml.jackson.databind.ObjectMapper;

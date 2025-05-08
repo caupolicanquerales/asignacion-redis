@@ -14,6 +14,7 @@ import com.capo.asignacion_redis.adapter.out.buildingGraph.BuildingGraphDestinat
 import com.capo.asignacion_redis.adapter.out.dijkstra.Dijkstra;
 import com.capo.asignacion_redis.adapter.out.model.DestinationsModel;
 import com.capo.asignacion_redis.adapter.out.model.ResponseGraphRedisModel;
+import com.capo.asignacion_redis.adapter.out.operationDestination.SaveDestination;
 import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationDestination;
 
 import reactor.core.publisher.Mono;
@@ -30,6 +31,9 @@ public class CostPointsOfSaleRedisController {
 	
 	@Autowired
 	Dijkstra dijkstra;
+	
+	@Autowired
+	SaveDestination saveDestination;
 	
 	@PostMapping("/update-cost")
 	public Mono<ResponseEntity<String>> updateCostAndDestination(@RequestBody DestinationModel request){
@@ -72,10 +76,8 @@ public class CostPointsOfSaleRedisController {
 	
 	@PostMapping("/save-destination")
 	public Mono<ResponseEntity<String>> saveCostAndDestination(@RequestBody DestinationModel request){
-		/*
-		return costAndRoute.saveCostAndDestination(request)
+		return saveDestination.saveDestination(request)
 				.map(ResponseEntity.ok()::body)
-				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));*/
-		return null;
+				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 }

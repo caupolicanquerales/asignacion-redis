@@ -1,4 +1,4 @@
-package com.capo.asignacion_redis.adapter.out.model;
+package com.capo.asignacion_redis.adapter.in.model;
 
 public class PointRedisModel {
 	private String id;

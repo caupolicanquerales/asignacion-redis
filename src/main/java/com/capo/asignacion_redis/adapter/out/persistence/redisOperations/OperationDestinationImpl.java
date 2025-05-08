@@ -37,6 +37,20 @@ public class OperationDestinationImpl implements OperationDestination{
 		.entryIterator();
 	}
 	
+	@Override
+	public Mono<DestinationModel> saveCostAndDestination(DestinationModel destinationModel) {
+		String key= destinationModel.getStartVertex()+","+destinationModel.getEndVertex();
+		RMapReactive<String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_COST.value);
+		return Mono.just(map.get(key)).flatMap(item->item)
+		.hasElement().map(element->{
+			if(!element) {
+				map.put(key, destinationModel.getCost()).then().subscribe();
+				return Mono.just(destinationModel);
+			}
+			return Mono.just(new DestinationModel());
+		}).flatMap(result->result);
+	}
+	
 	private DestinationModel getCostAndDestination(Map.Entry<String, String> entry) {
 		DestinationModel destination = new DestinationModel();
 		String[] vertex= entry.getKey().split(","); 

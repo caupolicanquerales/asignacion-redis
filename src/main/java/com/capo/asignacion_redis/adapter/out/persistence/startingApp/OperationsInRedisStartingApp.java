@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
-import com.capo.asignacion_redis.adapter.out.model.PointRedisModel;
+import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
 import com.capo.asignacion_redis.adapter.out.persistence.redisPetition.BasicPetitionToRedis;
 
