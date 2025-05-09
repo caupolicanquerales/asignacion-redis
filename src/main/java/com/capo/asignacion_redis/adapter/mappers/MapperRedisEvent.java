@@ -2,6 +2,7 @@ package com.capo.asignacion_redis.adapter.mappers;
 
 import java.util.Objects;
 
+import com.capo.adapter.kafkaEvents.CostsAndRoutesFromEvent;
 import com.capo.adapter.kafkaEvents.RedisDestinationEvent;
 import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
@@ -37,5 +38,12 @@ public class MapperRedisEvent {
 			return event;
 		}
 		return null;
+	}
+	
+	public static DestinationModel mapperToDestinationModel(CostsAndRoutesFromEvent costsAndRoutesFromEvent) {
+		DestinationModel event = new DestinationModel();
+		event.setEndVertex(costsAndRoutesFromEvent.getTravelTo());
+		event.setStartVertex(costsAndRoutesFromEvent.getTravelfrom());
+		return event;
 	}
 }

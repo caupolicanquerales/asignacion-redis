@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.capo.adapter.kafkaEvents.CostsAndRoutesFromResultEvent;
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 import com.capo.asignacion_redis.adapter.out.model.ResponseGraphRedisModel;
@@ -35,9 +36,26 @@ public class DijkstraImpl implements Dijkstra {
 			.map(this::getResponseGraph);
 	}
 	
+	@Override
+	public Mono<CostsAndRoutesFromResultEvent> getCostsAndRoutesToAccreditation(DestinationModel destination){
+		return estimationOfCosts(destination)
+				.map(this::setResult)
+				.map(event-> {
+					event.setTravelfrom(destination.getStartVertex());
+					event.setTravelTo(destination.getEndVertex());
+					return event;
+				});
+	}
+	
 	private ResponseGraphRedisModel getResponseGraph(Map<String,Map<Integer,String>> resultDij) {
 		ResponseGraphRedisModel result = new ResponseGraphRedisModel();
 		result.setResult(resultDij);
+		return result;
+	}
+	
+	private CostsAndRoutesFromResultEvent setResult(ResponseGraphRedisModel resultDij) {
+		CostsAndRoutesFromResultEvent result = new CostsAndRoutesFromResultEvent();
+		result.setResult(resultDij.getResult());
 		return result;
 	}
 }
