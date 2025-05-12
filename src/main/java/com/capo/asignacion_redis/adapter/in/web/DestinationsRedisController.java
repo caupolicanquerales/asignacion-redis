@@ -14,17 +14,17 @@ import com.capo.asignacion_redis.adapter.out.buildingGraph.BuildingGraphDestinat
 import com.capo.asignacion_redis.adapter.out.dijkstra.Dijkstra;
 import com.capo.asignacion_redis.adapter.out.model.DestinationsModel;
 import com.capo.asignacion_redis.adapter.out.model.ResponseGraphRedisModel;
-import com.capo.asignacion_redis.adapter.out.operationDestination.SaveDestination;
-import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationDestination;
+import com.capo.asignacion_redis.adapter.out.operationDestination.OperationsDestination;
+import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationDestinationInRedis;
 
 import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping("costos")
-public class CostPointsOfSaleRedisController {
+public class DestinationsRedisController {
 	
 	@Autowired
-	OperationDestination costAndRoute;
+	OperationDestinationInRedis costAndRoute;
 	
 	@Autowired
 	BuildingGraphDestination buildingGraph;
@@ -33,15 +33,13 @@ public class CostPointsOfSaleRedisController {
 	Dijkstra dijkstra;
 	
 	@Autowired
-	SaveDestination saveDestination;
+	OperationsDestination operationsDestination;
 	
 	@PostMapping("/update-cost")
-	public Mono<ResponseEntity<String>> updateCostAndDestination(@RequestBody DestinationModel request){
-		/*
-		return costAndRoute.updateCost(request)
+	public Mono<ResponseEntity<String>> updateCostInDestination(@RequestBody DestinationModel request){
+		return operationsDestination.updateCostInDestination(request)
 				.map(ResponseEntity.ok()::body)
-				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));*/
-		return null;
+				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 	
 	@DeleteMapping("/delete")
@@ -76,7 +74,7 @@ public class CostPointsOfSaleRedisController {
 	
 	@PostMapping("/save-destination")
 	public Mono<ResponseEntity<String>> saveCostAndDestination(@RequestBody DestinationModel request){
-		return saveDestination.saveDestination(request)
+		return operationsDestination.saveDestination(request)
 				.map(ResponseEntity.ok()::body)
 				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}

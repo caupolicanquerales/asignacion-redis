@@ -4,6 +4,7 @@ import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 
 import reactor.core.publisher.Mono;
 
-public interface SaveDestination {
+public interface OperationsDestination {
 	Mono<String> saveDestination(DestinationModel destinationModel);
+	Mono<String> updateCostInDestination(DestinationModel destinationModel);
 }

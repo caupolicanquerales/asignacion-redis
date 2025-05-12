@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 
 import org.springframework.stereotype.Service;
 
-import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationDestination;
+import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationDestinationInRedis;
 import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationPointOfSaleInRedis;
 import com.capo.asignacion_redis.application.port.in.CostsAndPointsMaps;
 
@@ -14,10 +14,10 @@ import reactor.core.publisher.Flux;
 public class EstablishInformationToGraph implements CostsAndPointsMaps {
 	
 	private final OperationPointOfSaleInRedis operationPointOfSale;
-	private final OperationDestination operationDestination;
+	private final OperationDestinationInRedis operationDestination;
 	
 	public EstablishInformationToGraph(OperationPointOfSaleInRedis operationPointOfSale,
-			OperationDestination operationDestination) {
+			OperationDestinationInRedis operationDestination) {
 		this.operationPointOfSale= operationPointOfSale;
 		this.operationDestination= operationDestination;
 	}

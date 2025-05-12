@@ -18,7 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class OperationDestinationImpl implements OperationDestination{
+public class OperationDestinationInRedisImpl implements OperationDestinationInRedis{
 	
 	@Autowired
 	BasicPetitionToRedis petitionRedis;
@@ -44,6 +44,20 @@ public class OperationDestinationImpl implements OperationDestination{
 		return Mono.just(map.get(key)).flatMap(item->item)
 		.hasElement().map(element->{
 			if(!element) {
+				map.put(key, destinationModel.getCost()).then().subscribe();
+				return Mono.just(destinationModel);
+			}
+			return Mono.just(new DestinationModel());
+		}).flatMap(result->result);
+	}
+	
+	@Override
+	public Mono<DestinationModel> updateCostInDestination(DestinationModel destinationModel) {
+		String key= destinationModel.getStartVertex()+","+destinationModel.getEndVertex();
+		RMapReactive<String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_COST.value);
+		return Mono.just(map.get(key)).flatMap(item->item)
+		.hasElement().map(element->{
+			if(element) {
 				map.put(key, destinationModel.getCost()).then().subscribe();
 				return Mono.just(destinationModel);
 			}
