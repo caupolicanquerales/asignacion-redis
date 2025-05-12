@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.redisson.api.RMapReactive;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.capo.asignacion_redis.adapter.enums.RedisEnum;
@@ -18,7 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class OperationPointOfSaleImpl implements OperationPointOfSale{
+public class OperationPointOfSaleInRedisImpl implements OperationPointOfSaleInRedis{
 	
 	@Autowired
 	BasicPetitionToRedis petitionRedis;
@@ -40,10 +39,35 @@ public class OperationPointOfSaleImpl implements OperationPointOfSale{
 	@Override
 	public Mono<PointRedisModel> savePointsOfSale(PointRedisModel pointRedisModel) {
 		RMapReactive <String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value);
-		return Mono.just(map.get(pointRedisModel.getLocation())).flatMap(item->item)
+		return Mono.just(map.get(pointRedisModel.getId())).flatMap(item->item)
 			.hasElement().map(element->{
 				if(!element) {
-					map.put(pointRedisModel.getLocation(),pointRedisModel.getId()).then().subscribe();
+					map.put(pointRedisModel.getId(),pointRedisModel.getLocation()).then().subscribe();
+					return Mono.just(pointRedisModel);
+				}
+				return Mono.just(new PointRedisModel());
+			}).flatMap(result->result);
+	}
+	
+	@Override
+	public Mono<PointRedisModel> updateLocationPointsOfSale(PointRedisModel pointRedisModel) {
+		RMapReactive <String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value);
+		return Mono.just(map.get(pointRedisModel.getId())).flatMap(item->item)
+			.hasElement().map(element->{
+				if(element) {
+					map.put(pointRedisModel.getId(),pointRedisModel.getLocation()).then().subscribe();
+					return Mono.just(pointRedisModel);
+				}
+				return Mono.just(new PointRedisModel());
+			}).flatMap(result->result);
+	}
+	
+	@Override
+	public Mono<PointRedisModel> removePointsOfSale(PointRedisModel pointRedisModel) {
+		RMapReactive <String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value);
+		return Mono.just(map.remove(pointRedisModel.getId())).flatMap(item->item)
+			.hasElement().map(element->{
+				if(element) {
 					return Mono.just(pointRedisModel);
 				}
 				return Mono.just(new PointRedisModel());

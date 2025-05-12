@@ -10,5 +10,4 @@ public class AsignacionRedisApplication {
 		String[] customArgs = new String[] {"points","destinations"};
 		SpringApplication.run(AsignacionRedisApplication.class, customArgs);
 	}
-
 }

@@ -27,7 +27,7 @@ public class OperationsInRedisStartingApp implements OperationsInRedisStarting {
 	@Override
 	public PointRedisModel savePointsOfSaleStartingApp(PointRedisModel pointRedisModel) {
 		RMapReactive<String,String> map = this.petitionRedis.getReactiveMap(RedisEnum.MAP_STORES.value);
-		map.put(pointRedisModel.getLocation(),pointRedisModel.getId()).then().subscribe();
+		map.put(pointRedisModel.getId(),pointRedisModel.getLocation()).then().subscribe();
 		return pointRedisModel;
 	}
 }

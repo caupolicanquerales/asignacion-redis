@@ -5,6 +5,8 @@ import java.util.Objects;
 import com.capo.adapter.kafkaEvents.CostsAndRoutesFromEvent;
 import com.capo.adapter.kafkaEvents.RedisDestinationEvent;
 import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
+import com.capo.adapter.kafkaEvents.RedisRemovePointOfSaleEvent;
+import com.capo.adapter.kafkaEvents.RedisUpdatePointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
@@ -35,6 +37,26 @@ public class MapperRedisEvent {
 			event.setCost(destinationModel.getCost());
 			event.setEndVertex(destinationModel.getEndVertex());
 			event.setStartVertex(destinationModel.getStartVertex());
+			return event;
+		}
+		return null;
+	}
+	
+	public static RedisUpdatePointOfSaleEvent mapperUpdatePointOfSaleEvent(PointRedisModel pointRedisModel) {
+		RedisUpdatePointOfSaleEvent event = new RedisUpdatePointOfSaleEvent();
+		if(Objects.nonNull(pointRedisModel.getId())) {
+			event.setId(pointRedisModel.getId());
+			event.setLocation(pointRedisModel.getLocation());
+			return event;
+		}
+		return null;
+	}
+	
+	public static RedisRemovePointOfSaleEvent mapperRemovePointOfSaleEvent(PointRedisModel pointRedisModel) {
+		RedisRemovePointOfSaleEvent event = new RedisRemovePointOfSaleEvent();
+		if(Objects.nonNull(pointRedisModel.getId())) {
+			event.setId(pointRedisModel.getId());
+			event.setLocation(pointRedisModel.getLocation());
 			return event;
 		}
 		return null;
