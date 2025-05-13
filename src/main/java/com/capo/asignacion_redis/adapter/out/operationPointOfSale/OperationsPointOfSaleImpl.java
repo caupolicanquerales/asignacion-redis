@@ -10,7 +10,7 @@ import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.adapter.kafkaEvents.RedisRemovePointOfSaleEvent;
 import com.capo.adapter.kafkaEvents.RedisUpdatePointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
-import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.mappers.MapperRedisPointOfSale;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
 import com.capo.asignacion_redis.adapter.out.persistence.redisOperations.OperationPointOfSaleInRedis;
 
@@ -39,7 +39,7 @@ public class OperationsPointOfSaleImpl implements OperationsPointOfSale {
 	@Override
 	public Mono<String> savePointOfSale(PointRedisModel pointRedisModel){
 		return operationPointOfSale.savePointsOfSale(pointRedisModel)
-		.map(model-> MapperRedisEvent.mapperPointOfSaleEvent(model))
+		.map(model-> MapperRedisPointOfSale.mapperPointOfSaleEvent(model))
 		.doOnNext(r -> log.info("save point of sale in Redis {}", Objects.nonNull(r)))
         .doOnNext(event->{
 			if(Objects.nonNull(event)) {
@@ -53,7 +53,7 @@ public class OperationsPointOfSaleImpl implements OperationsPointOfSale {
 	@Override
 	public Mono<String> udpateLocationPointOfSale(PointRedisModel pointRedisModel){
 		return operationPointOfSale.updateLocationPointsOfSale(pointRedisModel)
-		.map(model-> MapperRedisEvent.mapperUpdatePointOfSaleEvent(model))
+		.map(model-> MapperRedisPointOfSale.mapperUpdatePointOfSaleEvent(model))
 		.doOnNext(r -> log.info("update location point of sale in Redis {}", Objects.nonNull(r)))
         .doOnNext(event->{
 			if(Objects.nonNull(event)) {
@@ -67,7 +67,7 @@ public class OperationsPointOfSaleImpl implements OperationsPointOfSale {
 	@Override
 	public Mono<String> removePointOfSale(PointRedisModel pointRedisModel){
 		return operationPointOfSale.removePointsOfSale(pointRedisModel)
-		.map(model-> MapperRedisEvent.mapperRemovePointOfSaleEvent(model))
+		.map(model-> MapperRedisPointOfSale.mapperRemovePointOfSaleEvent(model))
 		.doOnNext(r -> log.info("remove point of sale in Redis {}", Objects.nonNull(r)))
         .doOnNext(event->{
 			if(Objects.nonNull(event)) {

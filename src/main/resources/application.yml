@@ -11,7 +11,7 @@ spring:
     port: 6379
   cloud:
     function:
-      definition: publishingDestinationEvent;publishingPointOfSaleEvent;processorResultPointOfSale;processorResultDestination;processorCostsAndRoutes;publishingUpdatePointOfSaleEvent;publishingRemovePointOfSaleEvent;publishingUpdateDestinationEvent
+      definition: publishingDestinationEvent;publishingPointOfSaleEvent;processorResultPointOfSale;processorResultDestination;processorCostsAndRoutes;publishingUpdatePointOfSaleEvent;publishingRemovePointOfSaleEvent;publishingUpdateDestinationEvent;publishingRemoveDestinationEvent
     stream:
       default-binder: kafka
       default:
@@ -28,6 +28,8 @@ spring:
           destination: redis-remove-point-events
         event-update-destination:
           destination: redis-update-destination-events
+        event-remove-destination:
+          destination: redis-remove-destination-events
         processorResultDestination-in-0:
           destination: mongo-result-destination-events
           group: mongo-destination-group

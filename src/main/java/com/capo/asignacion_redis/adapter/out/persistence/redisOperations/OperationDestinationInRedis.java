@@ -13,4 +13,5 @@ public interface OperationDestinationInRedis {
 	Flux<Entry<String, String>> getMapCost();
 	Mono<DestinationModel> saveCostAndDestination(DestinationModel destinationModel);
 	Mono<DestinationModel> updateCostInDestination(DestinationModel destinationModel);
+	Mono<DestinationModel> removeCostAndDestination(DestinationModel destinationModel);
 }

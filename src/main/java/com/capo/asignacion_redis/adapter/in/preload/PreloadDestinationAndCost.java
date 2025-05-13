@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.capo.adapter.kafkaEvents.RedisDestinationEvent;
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
 import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
-import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.mappers.MapperRedisPointOfSale;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
 import com.capo.asignacion_redis.adapter.out.model.DestinationsModel;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
@@ -39,7 +39,7 @@ public class PreloadDestinationAndCost implements CommandLineRunner{
 				DestinationsModel destinations= getFileFromResourceCostAndDestination(FILE_COSTS);
 				Flux.fromIterable(destinations.getCostAndDestination())
 				.map(this::savingDestinationInRedis)
-				.map(model-> MapperRedisEvent.mapperDestinationEvent(model))
+				.map(model-> MapperRedisPointOfSale.mapperDestinationEvent(model))
 				.doOnNext(event->emitEvent.emit(event))
 				.subscribe();
 				

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.asignacion_redis.adapter.in.file.RecoverFileFromResource;
 import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
-import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.mappers.MapperRedisPointOfSale;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
 import com.capo.asignacion_redis.adapter.out.model.PointsOfSaleModel;
 import com.capo.asignacion_redis.adapter.out.persistence.startingApp.OperationsInRedisStarting;
@@ -37,7 +37,7 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 				PointsOfSaleModel pointsOfSale= getFileFromResourcePointsOfSale(FILE_POINTS);
 				Flux.fromIterable(pointsOfSale.getPointOfSales())
 				.map(this::savingPointOfSalesInRedis)
-				.map(model-> MapperRedisEvent.mapperPointOfSaleEvent(model))
+				.map(model-> MapperRedisPointOfSale.mapperPointOfSaleEvent(model))
 				.doOnNext(event->emitEvent.emit(event))
 				.subscribe();
 				

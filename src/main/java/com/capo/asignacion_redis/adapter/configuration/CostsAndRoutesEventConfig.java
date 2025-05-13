@@ -12,7 +12,7 @@ import org.springframework.messaging.support.MessageBuilder;
 
 import com.capo.adapter.kafkaEvents.CostsAndRoutesFromEvent;
 import com.capo.adapter.kafkaEvents.CostsAndRoutesFromResultEvent;
-import com.capo.asignacion_redis.adapter.mappers.MapperRedisEvent;
+import com.capo.asignacion_redis.adapter.mappers.MapperRedisDestination;
 import com.capo.asignacion_redis.adapter.out.dijkstra.Dijkstra;
 import com.capo.asignacion_redis.adapter.utils.MessageConverter;
 
@@ -33,7 +33,7 @@ public class CostsAndRoutesEventConfig {
 		return flux-> flux.map(MessageConverter::toRecord)
 				.doOnNext(r -> log.info("get event from Mongo Accreditation {}", r.message()))
 				//.doOnNext(r -> r.acknowledgement().acknowledge())
-				.map(r-> MapperRedisEvent.mapperToDestinationModel(r.message()))
+				.map(r-> MapperRedisDestination.mapperToDestinationModel(r.message()))
 				.map(dijkstra::getCostsAndRoutesToAccreditation)
 				.concatMap(result->result)
 				.map(result->toMessageDestination(result));

@@ -42,13 +42,11 @@ public class DestinationsRedisController {
 				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 	
-	@DeleteMapping("/delete")
-	public Mono<ResponseEntity<String>> deleteCostAndDestination(@RequestBody DestinationModel request){
-		/*
-		return costAndRoute.deleteCostAndDestination(request)
-				.map(ResponseEntity.status(HttpStatus.OK)::body)
-				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));*/
-		return null;
+	@DeleteMapping("/remove")
+	public Mono<ResponseEntity<String>> removeCostAndDestination(@RequestBody DestinationModel request){
+		return operationsDestination.removeDestination(request)
+				.map(ResponseEntity.ok()::body)
+				.switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 	}
 	
 	@GetMapping("/prices")

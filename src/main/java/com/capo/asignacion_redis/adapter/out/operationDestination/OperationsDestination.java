@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 public interface OperationsDestination {
 	Mono<String> saveDestination(DestinationModel destinationModel);
 	Mono<String> updateCostInDestination(DestinationModel destinationModel);
+	Mono<String> removeDestination(DestinationModel destinationModel);
 }
