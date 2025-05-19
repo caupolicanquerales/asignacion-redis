@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.capo.adapter.kafkaEvents.GetPointsOfSaleEvent;
+import com.capo.adapter.kafkaEvents.GetInformationEvent;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EmitingEvent;
 
 import reactor.core.publisher.Mono;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public class PreloadPointsOfSale implements CommandLineRunner {
 	
 	@Autowired
-	EmitingEvent<GetPointsOfSaleEvent> emitGetPointsEvent;
+	EmitingEvent<GetInformationEvent> emitGetPointsEvent;
 	
 	private static final String POINTS="points";
 	
@@ -22,9 +22,9 @@ public class PreloadPointsOfSale implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		for(String arg: args) {
 			if(arg.equals(POINTS)) {
-				Mono.just(new GetPointsOfSaleEvent())
+				Mono.just(new GetInformationEvent())
 				.map(event->{
-					event.setSendPoints("Enviar puntos");
+					event.setSendInformation("Enviar puntos");
 					return event;
 				})
 				.doOnNext(event->emitGetPointsEvent.emit(event))

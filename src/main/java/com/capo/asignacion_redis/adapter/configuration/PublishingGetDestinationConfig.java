@@ -9,31 +9,31 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
-import com.capo.adapter.kafkaEvents.GetInformationEvent;
+import com.capo.adapter.kafkaEvents.GetInformationDestinationEvent;
 import com.capo.asignacion_redis.adapter.out.emitEvents.EventInUse;
 
 import reactor.core.publisher.Flux;
 
 @Configuration
-public class PublishingGetPointOfSaleConfig {
+public class PublishingGetDestinationConfig {
 	
-	private final EventInUse<GetInformationEvent> eventPublisher;
+	private final EventInUse<GetInformationDestinationEvent> eventPublisher;
 	
 	private static final String DESTINATION_HEADER = "spring.cloud.stream.sendto.destination";
-    private static final String EVENTS_CHANNEL = "event-get-point";
+    private static final String EVENTS_CHANNEL = "event-get-destination";
     
 	@Autowired
-	public PublishingGetPointOfSaleConfig(EventInUse<GetInformationEvent> eventPublisher) {
+	public PublishingGetDestinationConfig(EventInUse<GetInformationDestinationEvent> eventPublisher) {
 		this.eventPublisher=eventPublisher;
 	}
 	
 	@Bean
-    public Supplier<Flux<Message<GetInformationEvent>>> publishingGetPointOfSaleEvent() {
+    public Supplier<Flux<Message<GetInformationDestinationEvent>>> publishingGetDestinationEvent() {
         return () -> this.eventPublisher.publish()
                                         .map(this::toMessage);
     }
 	
-	private Message<GetInformationEvent> toMessage(GetInformationEvent event) {
+	private Message<GetInformationDestinationEvent> toMessage(GetInformationDestinationEvent event) {
         return MessageBuilder.withPayload(event)
                              .setHeader(KafkaHeaders.KEY, "18")
                              .setHeader(DESTINATION_HEADER, EVENTS_CHANNEL)

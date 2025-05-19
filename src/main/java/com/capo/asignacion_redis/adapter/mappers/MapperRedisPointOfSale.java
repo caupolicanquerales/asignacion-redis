@@ -22,14 +22,6 @@ public class MapperRedisPointOfSale {
 		return null;
 	}
 	
-	public static RedisDestinationEvent mapperDestinationEvent(VertexRedisModel vertexRedisModel) {
-		RedisDestinationEvent event = new RedisDestinationEvent();
-		event.setCost(vertexRedisModel.getCost());
-		event.setEndVertex(vertexRedisModel.getEndVertex());
-		event.setStartVertex(vertexRedisModel.getStartVertex());
-		return event;
-	}
-	
 	public static RedisUpdatePointOfSaleEvent mapperUpdatePointOfSaleEvent(PointRedisModel pointRedisModel) {
 		RedisUpdatePointOfSaleEvent event = new RedisUpdatePointOfSaleEvent();
 		if(Objects.nonNull(pointRedisModel.getId())) {
