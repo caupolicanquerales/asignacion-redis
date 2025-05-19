@@ -2,13 +2,11 @@ package com.capo.asignacion_redis.adapter.mappers;
 
 import java.util.Objects;
 
-import com.capo.adapter.kafkaEvents.CostsAndRoutesFromEvent;
+import com.capo.adapter.kafkaEvents.MongoResultPointsOfSaleEvent;
 import com.capo.adapter.kafkaEvents.RedisDestinationEvent;
 import com.capo.adapter.kafkaEvents.RedisPointOfSaleEvent;
 import com.capo.adapter.kafkaEvents.RedisRemovePointOfSaleEvent;
-import com.capo.adapter.kafkaEvents.RedisUpdateDestinationEvent;
 import com.capo.adapter.kafkaEvents.RedisUpdatePointOfSaleEvent;
-import com.capo.asignacion_redis.adapter.in.model.DestinationModel;
 import com.capo.asignacion_redis.adapter.in.model.PointRedisModel;
 import com.capo.asignacion_redis.adapter.out.model.VertexRedisModel;
 
@@ -50,5 +48,12 @@ public class MapperRedisPointOfSale {
 			return event;
 		}
 		return null;
+	}
+	
+	public static PointRedisModel mapperPointRedisModel(MongoResultPointsOfSaleEvent mongoResultPoints) {
+		PointRedisModel model = new PointRedisModel();
+		model.setId(mongoResultPoints.getIdLocation());
+		model.setLocation(mongoResultPoints.getLocation());
+		return model;
 	}
 }
